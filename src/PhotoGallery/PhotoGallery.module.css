@@ -1,0 +1,7 @@
+.ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+  padding: 20px;
+  list-style: none;
+}
