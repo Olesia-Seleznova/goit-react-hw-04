@@ -27,6 +27,8 @@ export default function ImageModal({ isOpen, image, onRequestClose }) {
       onRequestClose={onRequestClose}
       style={customStyles}
       ariaHideApp={false}
+      shouldCloseOnEsc={true}
+      shouldCloseOnOverlayClick={true}
     >
       {image && (
         <img

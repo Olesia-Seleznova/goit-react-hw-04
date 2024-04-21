@@ -1,4 +1,4 @@
-export default function PhotoCard({ item }) {
+export default function ImageCard({ item }) {
   return (
     <div>
       <img src={item.urls.small} alt={item.description} />

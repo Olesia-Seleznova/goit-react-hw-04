@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar/SearchBar";
-import PhotoGallery from "./PhotoGallery/PhotoGallery";
+import ImageGallery from "./ImageGallery/ImageGallery";
 import Loader from "./Loader/Loader";
 import ErrorMessage from "./ErrorMessage/ErrorMessage";
-import LoadMore from "./LoadMore/LoadMore";
+import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "./ImageModal/ImageModal";
 import { fetchPhotos } from "../photos-api";
 import "./App.css";
@@ -14,20 +14,22 @@ export default function App() {
   const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
+  const [totalPhotos, setTotalPhotos] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleSearch = async (newQuery) => {
     setQuery(newQuery);
     setPage(1);
     setPhotos([]);
+    setTotalPhotos(0);
   };
 
   const handleLoadMore = () => {
     setPage(page + 1);
   };
 
-  const openModal = (image) => {
-    setSelectedImage(image);
+  const openModal = (selectedImage) => {
+    setSelectedImage(selectedImage);
   };
 
   const closeModal = () => {
@@ -46,6 +48,7 @@ export default function App() {
         setPhotos((prevPhotos) => {
           return [...prevPhotos, ...data];
         });
+        setTotalPhotos(data.total_pages);
       } catch (error) {
         setError(true);
       } finally {
@@ -62,9 +65,12 @@ export default function App() {
       {isLoading && <Loader />}
       {error && <ErrorMessage />}
       {photos.length > 0 && (
-        <PhotoGallery items={photos} onImageClick={openModal} />
+        <ImageGallery items={photos} onImageClick={openModal} />
       )}
-      {photos.length > 0 && !isLoading && <LoadMore onClick={handleLoadMore} />}
+
+      {!isLoading && totalPhotos > photos.length && (
+        <LoadMoreBtn onClick={handleLoadMore} />
+      )}
       <ImageModal
         isOpen={selectedImage !== null}
         image={selectedImage}
