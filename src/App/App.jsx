@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import SearchBar from "./SearchBar/SearchBar";
-import ImageGallery from "./ImageGallery/ImageGallery";
-import Loader from "./Loader/Loader";
-import ErrorMessage from "./ErrorMessage/ErrorMessage";
-import LoadMoreBtn from "./LoadMoreBtn/LoadMoreBtn";
-import ImageModal from "./ImageModal/ImageModal";
+import SearchBar from "../SearchBar/SearchBar";
+import ImageGallery from "../ImageGallery/ImageGallery";
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
+import ImageModal from "../ImageModal/ImageModal";
 import { fetchPhotos } from "../photos-api";
 import "./App.css";
 
@@ -14,26 +14,30 @@ export default function App() {
   const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
-  const [totalPhotos, setTotalPhotos] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [showBtn, setShowBtn] = useState(false);
+  const [modalUrl, setModalUrl] = useState("");
+  const [modalAlt, setModalAlt] = useState("");
 
   const handleSearch = async (newQuery) => {
     setQuery(newQuery);
     setPage(1);
     setPhotos([]);
-    setTotalPhotos(0);
+    setShowBtn(false);
   };
 
   const handleLoadMore = () => {
     setPage(page + 1);
   };
 
-  const openModal = (selectedImage) => {
-    setSelectedImage(selectedImage);
+  const handleModalOpen = (imgUrl, imgAlt) => {
+    setModalUrl(imgUrl);
+    setModalAlt(imgAlt);
+    setModalIsOpen(true);
   };
 
-  const closeModal = () => {
-    setSelectedImage(null);
+  const handleModalClose = () => {
+    setModalIsOpen(false);
   };
 
   useEffect(() => {
@@ -45,10 +49,10 @@ export default function App() {
       try {
         setIsloading(true);
         const data = await fetchPhotos(query, page);
+        setShowBtn(data.total_pages && data.total_pages !== page);
         setPhotos((prevPhotos) => {
           return [...prevPhotos, ...data];
         });
-        setTotalPhotos(data.total_pages);
       } catch (error) {
         setError(true);
       } finally {
@@ -65,16 +69,18 @@ export default function App() {
       {isLoading && <Loader />}
       {error && <ErrorMessage />}
       {photos.length > 0 && (
-        <ImageGallery items={photos} onImageClick={openModal} />
+        <ImageGallery items={photos} onImageClick={handleModalOpen} />
       )}
 
-      {!isLoading && totalPhotos > photos.length && (
+      {!isLoading && showBtn && photos.length > 0 && (
         <LoadMoreBtn onClick={handleLoadMore} />
       )}
+
       <ImageModal
-        isOpen={selectedImage !== null}
-        image={selectedImage}
-        onRequestClose={closeModal}
+        isOpen={modalIsOpen}
+        onClose={handleModalClose}
+        url={modalUrl}
+        alt={modalAlt}
       />
     </div>
   );
