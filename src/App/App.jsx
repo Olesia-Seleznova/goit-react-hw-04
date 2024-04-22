@@ -47,11 +47,12 @@ export default function App() {
 
     async function getPhotos() {
       try {
+        setError(false);
         setIsloading(true);
         const data = await fetchPhotos(query, page);
         setShowBtn(data.total_pages && data.total_pages !== page);
         setPhotos((prevPhotos) => {
-          return [...prevPhotos, ...data];
+          return [...prevPhotos, ...data.results];
         });
       } catch (error) {
         setError(true);
@@ -69,7 +70,7 @@ export default function App() {
       {isLoading && <Loader />}
       {error && <ErrorMessage />}
       {photos.length > 0 && (
-        <ImageGallery items={photos} onImageClick={handleModalOpen} />
+        <ImageGallery items={photos} onImageOpen={handleModalOpen} />
       )}
 
       {!isLoading && showBtn && photos.length > 0 && (
