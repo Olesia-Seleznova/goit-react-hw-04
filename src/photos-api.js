@@ -9,7 +9,7 @@ export const fetchPhotos = async (serchQuery, currentPage) => {
     params: {
       query: serchQuery,
       page: currentPage,
-      per_page: 10,
+      per_page: 12,
       client_id: API_KEY,
       orientation: "landscape",
     },

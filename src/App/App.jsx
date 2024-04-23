@@ -6,7 +6,7 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "../ImageModal/ImageModal";
 import { fetchPhotos } from "../photos-api";
-import "./App.css";
+import css from "./App.module.css";
 
 export default function App() {
   const [photos, setPhotos] = useState([]);
@@ -64,25 +64,26 @@ export default function App() {
   }, [page, query]);
 
   return (
-    <div>
-      <h1>Photo Galery</h1>
+    <>
       <SearchBar onSearch={handleSearch} />
-      {isLoading && <Loader />}
-      {error && <ErrorMessage />}
-      {photos.length > 0 && (
-        <ImageGallery items={photos} onImageOpen={handleModalOpen} />
-      )}
+      <div className={css.div}>
+        {isLoading && <Loader />}
+        {error && <ErrorMessage />}
+        {photos.length > 0 && (
+          <ImageGallery items={photos} onImageOpen={handleModalOpen} />
+        )}
 
-      {!isLoading && showBtn && photos.length > 0 && (
-        <LoadMoreBtn onClick={handleLoadMore} />
-      )}
+        {!isLoading && showBtn && photos.length > 0 && (
+          <LoadMoreBtn onClick={handleLoadMore} />
+        )}
 
-      <ImageModal
-        isOpen={modalIsOpen}
-        onClose={handleModalClose}
-        url={modalUrl}
-        alt={modalAlt}
-      />
-    </div>
+        <ImageModal
+          isOpen={modalIsOpen}
+          onClose={handleModalClose}
+          url={modalUrl}
+          alt={modalAlt}
+        />
+      </div>
+    </>
   );
 }

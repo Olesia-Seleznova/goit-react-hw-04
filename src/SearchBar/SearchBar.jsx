@@ -1,5 +1,6 @@
 import toast, { Toaster } from "react-hot-toast";
 import { Formik, Form, Field } from "formik";
+import { AiOutlineSearch } from "react-icons/ai";
 import css from "./SearchBar.module.css";
 
 export default function SearchBar({ onSearch }) {
@@ -7,7 +8,6 @@ export default function SearchBar({ onSearch }) {
 
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />
       <Formik
         initialValues={{ query: "" }}
         onSubmit={(values, actions) => {
@@ -21,7 +21,7 @@ export default function SearchBar({ onSearch }) {
       >
         <Form className={css.form}>
           <button className={css.btn} type="submit">
-            Search
+            <AiOutlineSearch className={css.searchIcon} size="20" />
           </button>
           <Field
             className={css.input}
@@ -31,6 +31,8 @@ export default function SearchBar({ onSearch }) {
             autoFocus
             placeholder="Search images and photos"
           />
+
+          <Toaster position="top-right" />
         </Form>
       </Formik>
     </>
